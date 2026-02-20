@@ -1,0 +1,33 @@
+services:
+  database:
+    image: mongodb/mongodb-community-server:7.0-ubi8
+    volumes:
+      - type: bind
+        source: ./db
+        target: /data/db
+    healthcheck:
+      test: echo 'db.runCommand("ping").ok' | mongosh localhost:27017/test --quiet
+      interval: 10s
+      timeout: 10s
+      retries: 5
+      start_period: 40s
+    ports:
+      - "27017:27017"
+  frontend:
+    build:
+      context: ../ 
+      dockerfile: ./local_deploy/Dockerfile.front
+    ports:
+     -  "80:80"
+    depends_on:
+      - backend
+  backend:
+    build:
+      context: ../
+      dockerfile: ./local_deploy/Dockerfile.back
+    environment:
+      - MONGODB_URI=mongodb://database:27017/MERN
+    ports:
+     - "8080:8080"
+    depends_on:
+      - database

@@ -54,5 +54,6 @@ sudo cat /var/log/mongodb/mongod.log | grep "Waiting for connections"
 # )
 # EOF
 
+######### SEED DATABASE ##########
 # mongoimport installation https://www.mongodb.com/docs/database-tools/installation/?operating-system=linux&package-type=deb#std-label-dbtools_installation
-mongoimport --uri mongodb://mern:mern@10.0.0.1/MERN --collection Cruds --type json --file Cruds.json --jsonArray
+# mongoimport --uri mongodb://mern:mern@10.0.0.1/MERN --collection Cruds --type json --file Cruds.json --jsonArray
