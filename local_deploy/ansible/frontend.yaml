@@ -2,6 +2,7 @@
 - name: Frontend Server setup
   hosts: web_server
   remote_user: vagrant
+  become: true
   
   tasks: 
   - name: Install Nginx
@@ -67,7 +68,7 @@
             #}
             }
   - name: Restart Nginx
-    ansible.builtin.apt:
+    ansible.builtin.systemd_service:
       name: nginx.service
       enabled: true 
       state: restarted
