@@ -41,3 +41,7 @@ Run
 
 ## Docker-Compose
 - Create ./local_deploy/db directory. It will be binded to /data/db for MongoDB files persistent storage. 
+
+## Ansible
+`cd local_deploy/ansible`
+Run `ansible-playbook local.yml -i hosts`
