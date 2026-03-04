@@ -1,0 +1,95 @@
+---
+- name: Install MongoDB
+  hosts: db_server
+  remote_user: vagrant #user on target machine that is used to login via ssh, like `ssh user@ip`
+  tasks:
+  - name: Install dependencies
+    become: true
+    ansible.builtin.apt: 
+      update_cache: true
+      name: 
+        - libcurl4 
+        - libgssapi-krb5-2 
+        - libldap2 
+        - libwrap0 
+        - libsasl2-2 
+        - libsasl2-modules 
+        - libsasl2-modules-gssapi-mit 
+        - openssl 
+        - liblzma5 
+        - gnupg
+  - name: Download and Unpack the archive
+    ansible.builtin.unarchive:
+      src: /home/vagrant/mongodb-linux-x86_64-ubuntu2404-8.2.5.tgz
+      dest: /home/vagrant/
+      remote_src: true
+  - name: Copy bin to /usr/local/bin/
+    become: true
+    ansible.builtin.copy:
+      src: /home/vagrant/mongodb-linux-x86_64-ubuntu2404-8.2.5/bin/
+      dest: /usr/local/bin/
+      remote_src: true
+  - name: Create MongoDB related directories and change owner
+    become: true
+    ansible.builtin.file:
+      dest: "{{ item }}"
+      owner: vagrant
+      state: directory
+    loop: 
+      - /var/lib/mongo
+      - /var/log/mongodb
+
+
+### START MONGODB ###
+- name: Start MongoDB
+  hosts: db_server
+  remote_user: vagrant
+  tasks:
+  - name: Create MongoDB Service
+    become: true
+    ansible.builtin.blockinfile:
+      dest: /etc/systemd/system/mongodb.service
+      create: true
+      block: |
+            [Unit]
+            Description=MongoDB
+            After=network.target
+
+            [Service]
+            User=vagrant
+            ExecStart=/usr/local/bin/mongod --dbpath /var/lib/mongo --logpath /var/log/mongodb/mongod.log --bind_ip_all
+
+            [Install]
+            WantedBy=multi-user.target
+  - name: Start MongoDB Service
+    become: true
+    ansible.builtin.systemd_service:
+      daemon_reload: true
+      enabled: true
+      name: mongodb.service
+      state: started
+
+
+### INSTALL NONGO SHELL ###
+- name: Install Mongosh
+  hosts: db_server
+  remote_user: vagrant
+  tasks:
+  - name: Download deb 
+    become: true
+    ansible.builtin.get_url:
+      url: https://www.mongodb.org/static/pgp/server-8.0.asc
+      dest: /etc/apt/trusted.gpg.d/server-8.0.asc
+  - name: Add MongoDB repository
+    become: true
+    ansible.builtin.apt_repository:
+      repo: "deb [ arch=amd64,arm64 ] https://repo.mongodb.org/apt/ubuntu noble/mongodb-org/8.0 multiverse"
+      state: present
+      filename: mongodb-org-8.0
+      update_cache: yes
+  - name: Install Mongosh
+    become: true
+    ansible.builtin.apt:
+      name: mongodb-mongosh
+      state: present
+  
