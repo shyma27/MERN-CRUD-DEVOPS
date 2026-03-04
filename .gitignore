@@ -1,0 +1,5 @@
+#ignore Vagrant machine files
+.vagrant/
+
+#ignore local DB files
+db/
