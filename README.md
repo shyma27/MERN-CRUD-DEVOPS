@@ -43,5 +43,12 @@ Run
 - Create ./local_deploy/db directory. It will be binded to /data/db for MongoDB files persistent storage. 
 
 ## Ansible
-`cd local_deploy/ansible`
-Run `ansible-playbook local.yml -i hosts`
+- If use Windows, install Ansible in WSL, copy the source code to WSL, `chmod 700` for private_key file in local_deploy/.vagrant/machines/<machine_name>/private_key
+- `cd local_deploy/ansible`
+- Run `ansible-playbook main.yaml -i hosts`
+
+## Kubernetes
+- K3S token for worker node setup is stored at on control-plane Node: /var/lib/rancher/k3s/server/node-token
+- Pass both K3S_URL and K3S_TOKEN as envs to vargrant: 
+    - Linux: `K3S_URL=https://[IP_ADDRESS]:6443 K3S_TOKEN=my-secret-token-123 vagrant up`
+    - Windows Powershell: `$env:K3S_URL="https://[IP_ADDRESS]:6443"; $env:K3S_TOKEN="[SECRET_TOKEN]"; vagrant up`
