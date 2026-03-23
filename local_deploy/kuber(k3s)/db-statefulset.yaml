@@ -1,0 +1,38 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: mongodb-statefulset #name of statefulset
+  labels:
+    app: mongodb-statefulset #label of statefulset
+spec:
+  selector:
+    matchLabels:
+      app: mongodb #selector to find pods with this label to attach to this service. should match with pod's label (template.metadata.labels)
+  serviceName: "mongodb-service" #name of Service object, that Statefulset should be connected with
+  replicas: 2 #2 pods
+  minReadySeconds: 10 #Kubernetes waits 10 seconds after a pod is "Running" before it considers it "Ready."
+  ### POD Template ###
+  template:
+    metadata:
+      labels:
+        app: mongodb #label of pod, selector in service will find pods with this label
+    spec:
+      terminationGracePeriodSeconds: 10
+      containers:
+      - name: mongodb
+        image: mongodb/mongodb-community-server:7.0-ubi8
+        ports:
+        - containerPort: 27017
+          name: db-port
+        volumeMounts:
+        - name: mongodb-volume
+          mountPath: /data/db
+  volumeClaimTemplates:
+  - metadata:
+      name: mongodb-claim-template
+    spec:
+      accessModes: [ "ReadWriteOnce" ]
+      storageClassName: "local"
+      resources:
+        requests:
+          storage: 1Gi
