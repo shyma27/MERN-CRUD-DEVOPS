@@ -1,0 +1,19 @@
+# The Big One: Never copy local modules
+node_modules
+
+# Local environment secrets (use K8s secrets instead!)
+.env
+*.local
+
+# Git metadata (bloats the image)
+.git
+.gitignore
+
+# Logs and Debugging
+npm-debug.log*
+yarn-error.log*
+.vscode/
+
+# Build artifacts from your local machine
+dist/
+build/
