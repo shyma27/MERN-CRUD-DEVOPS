@@ -1,0 +1,14 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: frontend-service 
+  labels:
+    app: frontend-service 
+spec:
+  ports:
+  - port: 80
+    targetPort: frontend-app-port 
+    name: frontend-service-port 
+  clusterIP: None
+  selector:
+    app: frontend
