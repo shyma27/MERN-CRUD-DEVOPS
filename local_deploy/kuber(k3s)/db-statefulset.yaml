@@ -25,8 +25,20 @@ spec:
         - containerPort: 27017
           name: db-port
         volumeMounts:
-        - name: mongodb-volume
+        - name: mongodb-claim-template
           mountPath: /data/db
+        command: ["mongosh"]
+        args: | 
+              <<EOF
+              use MERN
+              db.createUser(
+                {
+                  user: "mern",
+                  pwd:  "mern",   // or cleartext password
+                  roles: [ { role: "readWrite", db: "MERN" } ]
+                }
+              )
+              EOF
   volumeClaimTemplates:
   - metadata:
       name: mongodb-claim-template
