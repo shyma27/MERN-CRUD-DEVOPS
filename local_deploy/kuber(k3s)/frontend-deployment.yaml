@@ -19,15 +19,17 @@ spec:
         image: shymauno/myrepo:nginx-1.28.2-alpine3.23-frontend-mern-crud-devops
         ports:
         - containerPort: 80
-          name: frontend-app-port
-        resources:
-          requests:
-            memory: "256Mi"
-            cpu: "256Mi"
+          name: front-app-port
+        # resources:
+        #   requests:
+        #     memory: "256Mi"
+        #     cpu: "256Mi"
         volumeMounts:
-          name: config-map-nginx
+        - name: config-map-nginx
           mountPath: /etc/nginx/conf.d/
+      imagePullSecrets:
+      - name: docker-auth
       volumes:
-        name: config-map-nginx
+      - name: config-map-nginx
         configMap:
           name: config-nginx

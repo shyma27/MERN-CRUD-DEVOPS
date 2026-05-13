@@ -19,11 +19,13 @@ spec:
         image: shymauno/myrepo:node-lts-alpine3.22-backend-mern-crud-devops
         ports:
         - containerPort: 8080
-          name: backend-app-port
-        resources:
-          requests:
-            memory: "256Mi"
-            cpu: "256Mi"
+          name: back-app-port
+        # resources:
+        #   requests:
+        #     memory: "256Mi"
+        #     cpu: "256Mi"
         env:
         - name: MONGODB_URI
           value: mongodb://mongodb-service:27017/MERN
+      imagePullSecrets:
+      - name: docker-auth

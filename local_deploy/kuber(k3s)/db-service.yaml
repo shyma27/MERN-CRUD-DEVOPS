@@ -9,6 +9,6 @@ spec:
   - port: 27017 #port service listens to, forwards requests to Pod container port
     targetPort: db-port #port of the container (defined in db-statefulset.yaml)
     name: db-service-port #port name. can be targeted by other objects
-  clusterIP: None #Headless service. nstead of giving you one IP, the DNS will return the direct IP addresses of all the individual MongoDB Pods.
+  clusterIP: None #Headless service. instead of giving you one IP, the DNS will return the direct IP addresses of all the individual MongoDB Pods.
   selector:
     app: mongodb #select Pods with this label

@@ -7,8 +7,8 @@ metadata:
 spec:
   ports:
   - port: 80
-    targetPort: frontend-app-port 
-    name: frontend-service-port 
+    targetPort: front-app-port 
+    name: front-service-port 
   clusterIP: None
   selector:
     app: frontend
