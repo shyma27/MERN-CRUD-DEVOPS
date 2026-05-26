@@ -5,10 +5,11 @@ metadata:
   labels:
     app: frontend-service 
 spec:
+  type: NodePort
   ports:
   - port: 80
     targetPort: front-app-port 
+    nodePort: 30007
     name: front-service-port 
-  clusterIP: None
   selector:
     app: frontend
