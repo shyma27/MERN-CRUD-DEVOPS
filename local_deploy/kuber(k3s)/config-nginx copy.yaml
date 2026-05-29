@@ -7,13 +7,26 @@ data:
     server {
         listen       80;
         server_name  localhost;
+        resolver 10.43.0.10 valid=10s;
 
         location / {
             root   /usr/share/nginx/html;
             index  index.html index.htm;
         }
 
-        location /api/ {            
+        location /cruds/ {
+            alias /usr/share/nginx/html/;
+            try_files $uri $uri/ /index.html;
+        }
+
+        location /api/ {
+            # Force Nginx to use the internal K8s DNS resolver
+            # resolver kube-dns.kube-system.svc.cluster.local valid=30s;
+            
+            #set $backend_url http://backend-service:8080;
+            # Nginx won't check if variable exists until the first request actually hits the server
+            #proxy_pass $backend_url;
+            
             proxy_pass http://backend-service:8080;
             proxy_http_version 1.1;
             proxy_set_header Upgrade $http_upgrade;
