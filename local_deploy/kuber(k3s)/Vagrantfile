@@ -14,7 +14,7 @@ Vagrant.configure("2") do |config|
       vb.cpus = 2
     end
     control.vm.provision "shell", env: {"K3S_TOKEN" => K3S_TOKEN}, inline: <<-SHELL
-      curl -sfL https://get.k3s.io | K3S_TOKEN=$K3S_TOKEN sh -s - server --node-ip=10.0.0.8
+      curl -sfL https://get.k3s.io | K3S_TOKEN=$K3S_TOKEN sh -s - server --node-ip=10.0.0.8 --flannel-iface=eth1
     SHELL
   end
 
@@ -28,7 +28,7 @@ Vagrant.configure("2") do |config|
       vb.cpus = 1
     end
     agent.vm.provision "shell", env: {"K3S_URL" => K3S_URL, "K3S_TOKEN" => K3S_TOKEN}, privileged: false, inline: <<-SHELL
-      curl -sfL https://get.k3s.io | K3S_URL=$K3S_URL K3S_TOKEN=$K3S_TOKEN sh -s - agent --node-ip=10.0.0.7
+      curl -sfL https://get.k3s.io | K3S_URL=$K3S_URL K3S_TOKEN=$K3S_TOKEN sh -s - agent --node-ip=10.0.0.7 --flannel-iface=eth1
     SHELL
   end
   
