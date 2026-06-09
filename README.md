@@ -48,7 +48,6 @@ Run
 - Run `ansible-playbook main.yaml -i hosts`
 
 ## Kubernetes
-- K3S token for worker node setup is stored at on control-plane Node: /var/lib/rancher/k3s/server/node-token
-- Pass both K3S_URL and K3S_TOKEN as envs to vargrant: 
-    - Linux: `K3S_URL=https://[IP_ADDRESS]:6443 K3S_TOKEN=my-secret-token-123 vagrant up`
-    - Windows Powershell: `$env:K3S_URL="https://[IP_ADDRESS]:6443"; $env:K3S_TOKEN="[SECRET_TOKEN]"; vagrant up`
+Vagrant creates two VMs (control and agent), installed K3S on both VMs (one as control-plane and one as agent). `vagrant up` will start both VMs and setup them. K3S_TOKEN is hardcoded into Vagrantfile for development purposes. 
+
+Cluster login details: /etc/rancher/k3s/k3s.yaml. Should be copied to .kube/config for terminal connection outside of control-plane VM.
