@@ -24,7 +24,7 @@ jobs:
       - name: Build and push
         uses: docker/build-push-action@v7
         with:
-          context: ./client
+          context: .
           file: ./local_deploy/Dockerfile.front
           push: true
           tags: |
