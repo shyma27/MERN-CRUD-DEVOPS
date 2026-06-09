@@ -1,7 +1,9 @@
 name: MERN CI/CD
 on:
   push:
-    branches: [ frontend ]
+    branches: 
+      - frontend
+
 jobs:
   frontend-ci:
     runs-on: ubuntu-latest
@@ -22,8 +24,8 @@ jobs:
       - name: Build and push
         uses: docker/build-push-action@v7
         with:
-          context: "{{defaultContext}}:client"
-          file: ../local_deploy/Dockerfile.front
+          context: ./client
+          file: ./local_deploy/Dockerfile.front
           push: true
           tags: |
             shymauno/myrepo:nginx-1.28.2-alpine3.23-frontend-mern-crud-devops
