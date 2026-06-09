@@ -2,7 +2,7 @@ name: MERN CI/CD
 on:
   push:
     branches: 
-      - frontend
+      - backend
 
 jobs:
   frontend-ci:
@@ -25,8 +25,8 @@ jobs:
         uses: docker/build-push-action@v7
         with:
           context: .
-          file: ./local_deploy/Dockerfile.front
+          file: ./local_deploy/Dockerfile.back
           push: true
           tags: |
-            shymauno/myrepo:nginx-1.28.2-alpine3.23-frontend-mern-crud-devops
-            shymauno/myrepo:nginx-1.28.2-alpine3.23-frontend-mern-crud-devops-${{ env.COMMIT_SHORT_SHA }}
+            shymauno/myrepo:node-lts-alpine3.22-backend-mern-crud-devops
+            shymauno/myrepo:node-lts-alpine3.22-backend-mern-crud-devops-${{ env.COMMIT_SHORT_SHA }}
