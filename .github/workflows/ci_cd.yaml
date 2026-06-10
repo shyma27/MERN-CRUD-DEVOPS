@@ -5,7 +5,7 @@ on:
       - backend
 
 jobs:
-  frontend-ci:
+  backend-ci:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout codebase
