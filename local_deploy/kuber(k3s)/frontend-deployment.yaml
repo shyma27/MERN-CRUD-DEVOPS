@@ -16,7 +16,7 @@ spec:
     spec:
       containers:
       - name: frontend
-        image: shymauno/myrepo:nginx-1.28.2-alpine3.23-frontend-mern-crud-devops
+        image: shymauno/myrepo:nginx-1.28.2-alpine3.23-frontend-mern-crud-devops-3341599
         ports:
         - containerPort: 80
           name: front-app-port
