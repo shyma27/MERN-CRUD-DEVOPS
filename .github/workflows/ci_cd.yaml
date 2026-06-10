@@ -6,6 +6,7 @@ on:
 
 jobs:
   frontend-ci:
+    # disable worklow loop, starts only if push is made not by actions bot
     if: github.actor != 'github-actions[bot]'
     runs-on: ubuntu-latest
     steps:
