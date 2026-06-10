@@ -16,7 +16,7 @@ spec:
     spec:
       containers:
       - name: backend
-        image: shymauno/myrepo:node-lts-alpine3.22-backend-mern-crud-devops
+        image: shymauno/myrepo:node-lts-alpine3.22-backend-mern-crud-devops-fd87cba
         ports:
         - containerPort: 8080
           name: back-app-port
