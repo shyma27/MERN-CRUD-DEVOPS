@@ -1,34 +1,78 @@
 Vagrant.configure("2") do |config|
   #K3s_URL = ENV['K3S_URL']
   #K3S_TOKEN = ENV['K3S_TOKEN']
-  K3S_URL = "https://10.0.0.8:6443"
+  K3S_URL = "https://192.168.0.50:6443"
   K3S_TOKEN = "MySuperSecretToken"
 
   config.vm.define "control" do |control|
-    control.vm.box = "bento/ubuntu-22.04"
-    control.vm.box_version = "202510.26.0"
+    config.vm.box = "generic/ubuntu2204"
+    config.vm.box_version = "4.3.12"
     control.vm.hostname = "control"
-    control.vm.network "private_network", ip: "10.0.0.8"
-    control.vm.provider "virtualbox" do |vb|
-      vb.memory = 2048
-      vb.cpus = 2
+    control.vm.network "public_network", :dev => "br0", :mode => "bridge", :type => "bridge", :ip => "192.168.0.50"
+    control.vm.provider "libvirt" do |lv|
+      lv.memory = 2048
+      lv.cpus = 2
     end
-    control.vm.provision "shell", env: {"K3S_TOKEN" => K3S_TOKEN}, inline: <<-SHELL
-      curl -sfL https://get.k3s.io | K3S_TOKEN=$K3S_TOKEN sh -s - server --node-ip=10.0.0.8 --flannel-iface=eth1
+    control.vm.provision "shell", run: "always", env: {"K3S_TOKEN" => K3S_TOKEN}, inline: <<-SHELL
+      set -e
+      cat > /etc/netplan/99-override.yaml <<EOF
+---
+network:
+  version: 2
+  renderer: networkd
+  ethernets:
+    eth0:
+      dhcp4: true
+      dhcp6: false
+      optional: true
+      nameservers:
+        addresses: [4.2.2.1, 4.2.2.2, 208.67.220.220]
+    eth1:
+      addresses:
+      - 192.168.0.50/24
+      routes:
+        - to: default
+          via: 192.168.0.1
+EOF
+      netplan apply
+      #ip route replace default via 192.168.0.1 dev eth1 metric 50
+      curl -sfL https://get.k3s.io | K3S_TOKEN=$K3S_TOKEN sh -s - server --node-ip=192.168.0.50 --flannel-iface=eth1
     SHELL
   end
 
   config.vm.define "agent" do |agent|
-    agent.vm.box = "bento/ubuntu-22.04"
-    agent.vm.box_version = "202510.26.0"
+    config.vm.box = "generic/ubuntu2204"
+    config.vm.box_version = "4.3.12"
     agent.vm.hostname = "agent"
-    agent.vm.network "private_network", ip: "10.0.0.7"
-    agent.vm.provider "virtualbox" do |vb|
-      vb.memory = 1024
-      vb.cpus = 1
+    agent.vm.network "public_network", :dev => "br0", :mode => "bridge", :type => "bridge", :ip => "192.168.0.51"
+    agent.vm.provider "libvirt" do |lv|
+      lv.memory = 1024
+      lv.cpus = 1
     end
-    agent.vm.provision "shell", env: {"K3S_URL" => K3S_URL, "K3S_TOKEN" => K3S_TOKEN}, privileged: false, inline: <<-SHELL
-      curl -sfL https://get.k3s.io | K3S_URL=$K3S_URL K3S_TOKEN=$K3S_TOKEN sh -s - agent --node-ip=10.0.0.7 --flannel-iface=eth1
+    agent.vm.provision "shell", env: {"K3S_URL" => K3S_URL, "K3S_TOKEN" => K3S_TOKEN}, inline: <<-SHELL
+      set -e
+      cat > /etc/netplan/99-override.yaml <<EOF
+---
+network:
+  version: 2
+  renderer: networkd
+  ethernets:
+    eth0:
+      dhcp4: true
+      dhcp6: false
+      optional: true
+      nameservers:
+        addresses: [4.2.2.1, 4.2.2.2, 208.67.220.220]
+    eth1:
+      addresses:
+      - 192.168.0.51/24
+      routes:
+        - to: default
+          via: 192.168.0.1
+EOF
+      netplan apply
+      #ip route replace default via 192.168.0.1 dev eth1 metric 50
+      curl -sfL https://get.k3s.io | K3S_URL=$K3S_URL K3S_TOKEN=$K3S_TOKEN sh -s - agent --node-ip=192.168.0.51 --flannel-iface=eth1
     SHELL
   end
   
