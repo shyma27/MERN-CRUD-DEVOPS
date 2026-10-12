@@ -6,6 +6,7 @@ Stack:
 - MongoDB
 - Mongoose ODM
 
+`Main` branch has infrustructure files for Vagrant (change Vagrantfile name from Vagrantfile-win to Vagrantfile in order to run on Windows). `Frontend` and `Backend` branches have infrustructure code and CI/CD files for each respective.
 
 ## Vagrant
 Create VMs:
